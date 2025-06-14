@@ -1,9 +1,9 @@
-import { GoogleGenAI } from '@google/genai';
-import { personalities } from '../src/data/personalities';
+const { GoogleGenAI } = require('@google/genai');
+const { personalities } = require('../src/data/personalities');
 
 const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }

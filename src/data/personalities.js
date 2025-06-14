@@ -1,4 +1,4 @@
-export const personalities = [
+const personalities = [
   {
     id: 'shakespeare',
     name: 'Shakespeare Bot',
@@ -72,3 +72,5 @@ export const personalities = [
     traits: ['Sarcastic', 'Indirect', 'Faux-nice']
   }
 ];
+
+module.exports = { personalities };
