@@ -1,7 +1,7 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 import { personalities } from '../src/data/personalities';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -20,21 +20,25 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Invalid personalityId' });
     }
 
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-pro",
-      generationConfig: {
-        temperature: personality.temperature,
-        topK: 1,
-        topP: 1,
-        maxOutputTokens: 2048,
-      },
-    });
-
     const prompt = `${personality.systemPrompt}\n\nUser: ${message}\n\nAssistant:`;
     
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+    const result = await genAI.models.generateContent({
+      model: "gemini-2.5-flash-preview-05-20",
+      contents: prompt,
+      config: {
+        generationConfig: {
+          temperature: personality.temperature,
+          topK: 1,
+          topP: 1,
+          maxOutputTokens: 2048,
+        },
+        thinkingConfig: {
+          includeThoughts: false, // Set to true if you want to see the model's thinking process
+        },
+      },
+    });
+    
+    const text = result.text;
 
     res.status(200).json({ 
       response: text,
